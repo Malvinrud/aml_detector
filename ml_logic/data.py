@@ -22,7 +22,6 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     Performs basic cleaning and necessary preprocessing task
     """
 
-    # df.drop("Amount Paid", axis=1, inplace=True)
 
     # List of payment formats to remove
     remove_formats = ['Reinvestment', 'Wire']
@@ -36,7 +35,8 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
                    "Account.1": "to_account",
                    "From Bank": "from_bank",
                    "To Bank": "to_bank",
-                   "Amount Received": "amount",
+                   "Amount Received": "amount_received",
+                   "Amount Paid": "amount_paid",
                    "Payment Format": "payment_format",
                    "Is Laundering": "is_laundering"})
 
@@ -95,8 +95,9 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     ########################################################################################################
 
     # Compute 'Amount Paid USD' and 'Amount Received USD'
-    df['amount_paid'] = df['amount'] * df['rate']
-    df['Amount Received USD'] = df['Amount Received'] * df['rate']
+    df['amount_paid_USD'] = df['amount_paid'].astype('float32') * df['rate']
+    df['amount_received_USD'] = df['amount_received'].astype('float32') * df['rate']
+
 
     ########################################################################################################
 
@@ -110,11 +111,8 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
 
     # Convert Timestamp into datetime
-    df['Timestamp'] = pd.to_datetime(df['timestamp'])
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
 
-
-
-    ########################################################################################################
 
     # Create new columns for year, month, day, hour and minute
     df['year'] = df['timestamp'].dt.year
@@ -123,7 +121,10 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     df['hour'] = df['timestamp'].dt.hour
     df['minute'] = df['timestamp'].dt.minute
 
-    ########################################################################################################
+    df.drop("amount_received", axis=1, inplace=True)
+    df.drop("amount_paid", axis=1, inplace=True)
+    df.drop("currency_code", axis=1, inplace=True)
+    df.drop("rate", axis=1, inplace=True)
 
 
     print("✅ data cleaned")
