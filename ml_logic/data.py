@@ -6,9 +6,15 @@ import requests
 
 # from taxifare.params import *
 
-def get_data_local(size="small", fraud="HI"):
+def get_data_local(size="Small", fraud="HI"):
 
-    file = '../raw_data/HI-Small_Trans.csv'
+    """Enter "Small"/"Medium"/"Large" to specify corpus size. "HI"/"LI" for amount of fraud inside (HI is more)."""
+
+    fraud = fraud
+
+    size = size
+
+    file = f'../raw_data/{fraud}-{size}_Trans.csv'
     df = pd.read_csv(file, decimal=',')
 
     return df
@@ -19,10 +25,9 @@ def get_data_cloud():
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Performs basic cleaning and necessary preprocessing task
+    Performs basic cleaning and necessary preprocessing task.
     """
 
-    # df.drop("Amount Paid", axis=1, inplace=True)
 
     # List of payment formats to remove
     remove_formats = ['Reinvestment', 'Wire']
@@ -36,7 +41,8 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
                    "Account.1": "to_account",
                    "From Bank": "from_bank",
                    "To Bank": "to_bank",
-                   "Amount Received": "amount",
+                   "Amount Received": "amount_received",
+                   "Amount Paid": "amount_paid",
                    "Payment Format": "payment_format",
                    "Is Laundering": "is_laundering"})
 
@@ -92,13 +98,10 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     # Wherever the rate is NaN, that means the currency was USD. We can fill those with 1.
     df['rate'] = df['rate'].fillna(1)
 
-    ########################################################################################################
-
     # Compute 'Amount Paid USD' and 'Amount Received USD'
-    df['amount_paid'] = df['amount'] * df['rate']
-    df['Amount Received USD'] = df['Amount Received'] * df['rate']
+    df['amount_paid_USD'] = df['amount_paid'].astype('float32') * df['rate']
+    df['amount_received_USD'] = df['amount_received'].astype('float32') * df['rate']
 
-    ########################################################################################################
 
     # put currency pair together and delete obsolete columns
 
@@ -110,11 +113,8 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
 
     # Convert Timestamp into datetime
-    df['Timestamp'] = pd.to_datetime(df['timestamp'])
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
 
-
-
-    ########################################################################################################
 
     # Create new columns for year, month, day, hour and minute
     df['year'] = df['timestamp'].dt.year
@@ -123,7 +123,10 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     df['hour'] = df['timestamp'].dt.hour
     df['minute'] = df['timestamp'].dt.minute
 
-    ########################################################################################################
+    df.drop("amount_received", axis=1, inplace=True)
+    df.drop("amount_paid", axis=1, inplace=True)
+    df.drop("currency_code", axis=1, inplace=True)
+    df.drop("rate", axis=1, inplace=True)
 
 
     print("✅ data cleaned")
