@@ -17,6 +17,8 @@ def get_data_local(size="Small", fraud="HI"):
     file = f'../raw_data/{fraud}-{size}_Trans.csv'
     df = pd.read_csv(file, decimal=',')
 
+    print("✅ data received")
+
     return df
 
 def get_data_cloud():
@@ -44,7 +46,9 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
                    "Amount Received": "amount_received",
                    "Amount Paid": "amount_paid",
                    "Payment Format": "payment_format",
-                   "Is Laundering": "is_laundering"})
+                   "Is Laundering": "is_laundering",
+                   "Receiving Currency": "receiving_currency",
+                   "Payment Currency": "payment_currency"})
 
     currency_dict = {"US Dollar": "USD",
                  "Bitcoin": "XBT",
@@ -62,7 +66,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
                  "Saudi Riyal": "SAR",
                  "Shekel": "ILS"}
 
-    df['currency_code'] = df['Payment Currency'].replace(currency_dict)
+    df['currency_code'] = df['payment_currency'].replace(currency_dict)
 
     # Get the exchange rate for all the currencies by connecting to Exchange Rate Data API
 
@@ -105,11 +109,11 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
     # put currency pair together and delete obsolete columns
 
-    df["Receiving Currency"] = df["Receiving Currency"].map(currency_dict)
-    df["Payment Currency"] = df["Payment Currency"].map(currency_dict)
+    df["receiving_currency"] = df["receiving_currency"].map(currency_dict)
+    df["payment_currency"] = df["payment_currency"].map(currency_dict)
 
-    df["currency_pair"] = df["Receiving Currency"] + "_" + df["Payment Currency"]
-    df = df.drop(['Receiving Currency', 'Payment Currency'], axis=1)
+    # df["currency_pair"] = df["receiving_currency"] + "_" + df["payment_currency"]
+    # df = df.drop(['receiving_currency', 'payment_currency'], axis=1)
 
 
     # Convert Timestamp into datetime
@@ -117,7 +121,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
 
     # Create new columns for year, month, day, hour and minute
-    df['year'] = df['timestamp'].dt.year
+    # df['year'] = df['timestamp'].dt.year
     df['month'] = df['timestamp'].dt.month
     df['day'] = df['timestamp'].dt.day
     df['hour'] = df['timestamp'].dt.hour
@@ -127,6 +131,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     df.drop("amount_paid", axis=1, inplace=True)
     df.drop("currency_code", axis=1, inplace=True)
     df.drop("rate", axis=1, inplace=True)
+    df.drop("timestamp", axis=1, inplace=True)
 
 
     print("✅ data cleaned")
