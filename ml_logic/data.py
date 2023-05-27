@@ -6,9 +6,15 @@ import requests
 
 # from taxifare.params import *
 
-def get_data_local(size="small", fraud="HI"):
+def get_data_local(size="Small", fraud="HI"):
 
-    file = '../raw_data/HI-Small_Trans.csv'
+    """Enter "Small"/"Medium"/"Large" to specify corpus size. "HI"/"LI" for amount of fraud inside (HI is more)."""
+
+    fraud = fraud
+
+    size = size
+
+    file = f'../raw_data/{fraud}-{size}_Trans.csv'
     df = pd.read_csv(file, decimal=',')
 
     return df
@@ -19,7 +25,7 @@ def get_data_cloud():
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Performs basic cleaning and necessary preprocessing task
+    Performs basic cleaning and necessary preprocessing task.
     """
 
 
@@ -92,14 +98,10 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     # Wherever the rate is NaN, that means the currency was USD. We can fill those with 1.
     df['rate'] = df['rate'].fillna(1)
 
-    ########################################################################################################
-
     # Compute 'Amount Paid USD' and 'Amount Received USD'
     df['amount_paid_USD'] = df['amount_paid'].astype('float32') * df['rate']
     df['amount_received_USD'] = df['amount_received'].astype('float32') * df['rate']
 
-
-    ########################################################################################################
 
     # put currency pair together and delete obsolete columns
 
