@@ -3,6 +3,8 @@ import numpy as np
 from colorama import Fore, Style
 from typing import Tuple
 
+from torchmetrics.classification import BinaryAccuracy, BinaryPrecision, BinaryF1Score, BinaryRecall, BinaryAUROC
+
 # Timing the TF import
 print(Fore.BLUE + "\nLoading TensorFlow..." + Style.RESET_ALL)
 start = time.perf_counter()
@@ -33,7 +35,7 @@ def initialize_model(df) -> Model:
 
     for _, row in df_temp.iterrows():
     # Create a variable for each properties for each edge
-    
+
         year = row["Year"],
         month = row["Month"],
         day = row["Day"],
@@ -59,10 +61,10 @@ def initialize_model(df) -> Model:
         Currency_Code_RUB =row["Currency Code_RUB"],
         Currency_Code_SAR = row["Currency Code_SAR"],
         Currency_Code_USD =  row["Currency Code_USD"]
- 
+
         G.add_edge(row['Account'], row['Account.1'], year = year , month = month , day = day ,
               hour = hour , minute = minute , amount_paid = amount_paid, payment_format_ach =  payment_format_ach,
-              payment_format_bitcoin = payment_format_bitcoin, 
+              payment_format_bitcoin = payment_format_bitcoin,
             payment_format_cash = payment_format_cash,
             Payment_format_Cheque = Payment_format_Cheque,
             Payment_Format_Credit_Card = Payment_Format_Credit_Card,
@@ -80,14 +82,14 @@ def initialize_model(df) -> Model:
             Currency_Code_RUB = Currency_Code_RUB,
             Currency_Code_SAR = Currency_Code_SAR,
             Currency_Code_USD =  Currency_Code_USD)
-        
+
     # Get the number of nodes and edges in the graph
     num_nodes = G.number_of_nodes()
     num_edges = G.number_of_edges()
 
     # Convert the graph to an adjacency matrix
     adj_matrix = nx.adjacency_matrix(G).todense()
-    
+
     import collections
     # Retrieve the properties errors of all the edges
     edge_properties = nx.get_edge_attributes(G, 'errors')
@@ -97,7 +99,7 @@ def initialize_model(df) -> Model:
 
     # Print the count of edges by property value
     for property_value, count in edge_count_by_property.items():
-    
+
     print("Number of nodes:", num_nodes)
     print("Number of edges:", num_edges)
 
@@ -142,12 +144,37 @@ def train_model():
     return model, history
 
 
-def evaluate_model():
+def evaluate_model(y_pred, y_test):
     """
-    Evaluate trained model performance on the dataset
+    Evaluate trained model performance on the y_test
     """
 
+    accuracy = BinaryAccuracy()
 
-    print(f"✅ Model evaluated, metric: {round(mae, 2)}")
+    precision = BinaryPrecision()
 
-    return metrics
+    recall = BinaryRecall()
+
+    f1 = BinaryF1Score()
+
+    auroc = BinaryAUROC()
+
+    accuracy = accuracy(y_pred, y_test)
+
+    precision = precision(y_pred, y_test)
+
+    recall = recall(y_pred, y_test)
+
+    f1 = f1(y_pred, y_test)
+
+    auroc = auroc(y_pred, y_test)
+
+
+    print(f"✅ Model evaluated")
+    print(f"accuracy: {accuracy}")
+    print(f"precision: {precision}")
+    print(f"recall: {recall}")
+    print(f"f1: {f1}")
+    print(f"auroc: {auroc}")
+
+    return (accuracy, precision, recall, f1, auroc)
