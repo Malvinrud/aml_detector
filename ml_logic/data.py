@@ -137,3 +137,58 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     print("✅ data cleaned")
 
     return df
+
+
+def data_reduction(df, expected_fraud_amount=0.1):
+    """
+    This function randomly cuts non-fraud transactions to artificially increase amount of fraud
+    """
+
+    # list all unique accounts
+
+    from_accounts = df["from_account"].to_numpy()
+    to_accounts  = df["to_account"].to_numpy()
+
+    all_accounts = np.append(from_accounts, to_accounts)
+    all_accounts = np.unique(all_accounts)
+
+    # show only fraud
+
+    fraud_mask = df["is_laundering"] == 1
+
+    fraud_df = df[fraud_mask]
+
+    fraud_from = fraud_df["from_account"].to_numpy()
+    fraud_to  = fraud_df["to_account"].to_numpy()
+
+    all_fraud = np.append(fraud_from, fraud_to)
+    all_fraud = np.unique(all_fraud)
+
+    # keep this part for final df
+
+    all_fraud_df_mask = df["from_account"].isin(all_fraud) | df["to_account"].isin(all_fraud)
+
+    all_fraud_df = df[all_fraud_df_mask]
+
+    # get df with only non_fraud data
+
+    non_fraud_mask = ~(df["from_account"].isin(all_fraud) | df["to_account"].isin(all_fraud))
+
+    non_fraud_df = df[non_fraud_mask]
+
+
+    # getting amount for non-fraud
+
+    all_fraud_absolut = len(fraud_df)
+
+    new_amount_total = all_fraud_absolut/expected_fraud_amount
+
+    new_amount_non_fraud = int(new_amount_total - all_fraud_absolut)
+
+    new_non_fraud_df = non_fraud_df.sample(n=new_amount_non_fraud)
+
+    new_df = pd.concat([new_non_fraud_df, fraud_df])
+
+    print(f"✅ randomly removed {len(df)-len(new_df)} non-fraudulent rows from the data frame.")
+
+    return new_df
