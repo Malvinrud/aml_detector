@@ -1,20 +1,66 @@
 import streamlit as st
-import requests
+import numpy as np
+import pandas as pd
+import plotly as px
 
-################################
-######### JUST A DUMMY #########
-################################
 
-param1 = st.slider('Select a number', 1, 10, 3)
+st.markdown("""# AML detector""")
 
-param2 = st.slider('Select another number', 1, 10, 3)
+st.divider()
 
-url = 'http://localhost:8080/predict'
+st.markdown("""💸💸💸“Money is usually attracted, not pursued.”\t💸💸💸""")
 
-params = {
-    'feature1': param1,
-    'feature2': param2
-}
-response = requests.get(url, params=params)
 
-st.text(response.json())
+
+# This reads file as bytes, other options are available
+
+
+with st.form("upload_form"):
+
+    uploaded_file = st.file_uploader("Upload file for money laundering detection")
+    if uploaded_file is not None:
+        # To read file as bytes:
+        bytes_data = uploaded_file.getvalue()
+        st.write(bytes_data)
+
+    # Every form must have a submit button.
+    submitted = st.form_submit_button("Upload")
+    if submitted:
+       st.write("""Your file is being processed""")
+
+
+### dummy for plotly viz
+
+@st.cache_data
+def get_plotly_data():
+
+    z_data = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/api_docs/mt_bruno_elevation.csv')
+    z = z_data.values
+    sh_0, sh_1 = z.shape
+    x, y = np.linspace(0, 1, sh_0), np.linspace(0, 1, sh_1)
+    return x, y, z
+
+import plotly.graph_objects as go
+
+x, y, z = get_plotly_data()
+
+fig = go.Figure(data=[go.Surface(z=z, x=x, y=y)])
+fig.update_layout(title='IRR', autosize=False, width=800, height=800, margin=dict(l=40, r=40, b=40, t=40))
+st.plotly_chart(fig)
+
+
+
+
+with st.form("upload_form"):
+    st.write("Inside the form")
+
+    uploaded_file = st.file_uploader("Upload file for money laundering detection")
+    if uploaded_file is not None:
+        # To read file as bytes:
+        bytes_data = uploaded_file.getvalue()
+        st.write(bytes_data)
+
+    # Every form must have a submit button.
+    submitted = st.form_submit_button("Submit")
+    if submitted:
+       st.write("slider", slider_val, "checkbox", checkbox_val)
