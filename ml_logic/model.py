@@ -1,33 +1,37 @@
 import numpy as np
 
-from colorama import Fore, Style
-from typing import Tuple
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import networkx as nx
+from edges_nodes import create_nodes_edges
+from data import clean_data
 
+<<<<<<< HEAD
 from torchmetrics.classification import BinaryAccuracy, BinaryPrecision, BinaryF1Score, BinaryRecall, BinaryAUROC
 
 # Timing the TF import
 print(Fore.BLUE + "\nLoading TensorFlow..." + Style.RESET_ALL)
 start = time.perf_counter()
+=======
+>>>>>>> 0e566e5a038be47a2f602eaa6e196a1503681444
 
 ######## TF imports here ########
 
-from tensorflow import keras
-from keras import Model, Sequential, layers, regularizers, optimizers
-from keras.callbacks import EarlyStopping
-
-end = time.perf_counter()
-print(f"\n✅ TensorFlow loaded ({round(end - start, 2)}s)")
 
 
+class FraudGNN(nn.Module):
+    def __init__(self, input_dim, hidden_dim):
+        super(FraudGNN, self).__init__()
+        self.fc1 = nn.Linear(input_dim, hidden_dim)
+        self.fc2 = nn.Linear(hidden_dim, 1)
 
-def initialize_model(df) -> Model:
-    """
-    Initialize the model
-    """
-    !pip install networkx
-    import networkx as nx
-    G = nx.MultiGraph()
+    def forward(self, x):
+        x = self.fc1(x)
+        x = F.relu(x)
+        x = self.fc2(x)
 
+<<<<<<< HEAD
         # Add nodes to the graph for each unique card_id, merchant_name
     G.add_nodes_from(df["Account"].unique(), type='Account')
     G.add_nodes_from(df["Account.1"].unique(), type='Account.1')
@@ -178,3 +182,6 @@ def evaluate_model(y_pred, y_test):
     print(f"auroc: {auroc}")
 
     return (accuracy, precision, recall, f1, auroc)
+=======
+        return x.squeeze(-1)
+>>>>>>> 0e566e5a038be47a2f602eaa6e196a1503681444
