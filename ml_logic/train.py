@@ -54,4 +54,4 @@ def train_model():
         # Update the parameters
         optimizer.step()
 
-    return optimizer.step, model
+    return model, target
