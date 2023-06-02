@@ -25,38 +25,15 @@ class FraudGNN(nn.Module):
 
         return x.squeeze(-1)
 
+def model_data(G):
+    # Prepare the data for input into the model
+    edge_list = list(G.edges(data=True))
+    x = []
+    for edge in edge_list:
+        edge_values = list(edge[2].values())
+        print(edge_values)
+        edge_values = [float(i[0]) if type(i) == tuple and type(i[0]) == str else i[0] if type(i) == tuple else i for i in edge_values]
+        x.append(edge_values)
+    x = torch.tensor(x, dtype=torch.float)
+    return x
 
-def evaluate_model(y_pred, y_test):
-    """
-    Evaluate trained model performance on the y_test
-    """
-
-    accuracy = BinaryAccuracy()
-
-    precision = BinaryPrecision()
-
-    recall = BinaryRecall()
-
-    f1 = BinaryF1Score()
-
-    auroc = BinaryAUROC()
-
-    accuracy = accuracy(y_pred, y_test)
-
-    precision = precision(y_pred, y_test)
-
-    recall = recall(y_pred, y_test)
-
-    f1 = f1(y_pred, y_test)
-
-    auroc = auroc(y_pred, y_test)
-
-
-    print(f"✅ Model evaluated")
-    print(f"accuracy: {accuracy}")
-    print(f"precision: {precision}")
-    print(f"recall: {recall}")
-    print(f"f1: {f1}")
-    print(f"auroc: {auroc}")
-
-    return (accuracy, precision, recall, f1, auroc)
