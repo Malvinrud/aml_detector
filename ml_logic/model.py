@@ -36,4 +36,3 @@ def model_data(G):
         x.append(edge_values)
     x = torch.tensor(x, dtype=torch.float)
     return x
-

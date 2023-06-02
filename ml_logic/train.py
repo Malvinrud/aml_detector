@@ -54,4 +54,7 @@ def train_model(FraudGNN, G, df):
         # Update the parameters
         optimizer.step()
 
+
     return optimizer.step, model, target
+=======
+    return model, target
