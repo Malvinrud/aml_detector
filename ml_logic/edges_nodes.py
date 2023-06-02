@@ -121,7 +121,7 @@ def create_nodes_edges(df):
     num_edges = G.number_of_edges()
 
     # Print the number of nodes and edges
-    print("Number of nodes:", num_nodes)
-    print("Number of edges:", num_edges)
+    print("✅ Number of nodes:", num_nodes)
+    print("✅ Number of edges:", num_edges)
 
     return G

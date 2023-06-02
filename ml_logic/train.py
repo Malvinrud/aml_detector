@@ -14,22 +14,7 @@ from model import FraudGNN
 
 
 
-def train_model(FraudGNN, G, df):
-
-    #FraudGNN = FraudGNN
-    #G = create_nodes_edges()
-    #df = clean_data()
-    # Prepare the data for input into the model
-    edge_list = list(G.edges(data=True))
-    x = []
-    for edge in edge_list:
-        edge_values = list(edge[2].values())
-        print(edge_values)
-        edge_values = [float(i[0]) if type(i) == tuple and type(i[0]) == str else i[0] if type(i) == tuple else i for i in edge_values]
-        x.append(edge_values)
-    x = torch.tensor(x, dtype=torch.float)
-
-    target = torch.tensor(df['is_laundering'].values, dtype=torch.float)
+def train_model(FraudGNN, x, target):
 
     input_dim = len(x[0])
     hidden_dim = 16
@@ -56,5 +41,3 @@ def train_model(FraudGNN, G, df):
 
 
     return optimizer.step, model, target
-=======
-    return model, target
