@@ -14,11 +14,11 @@ from model import FraudGNN
 
 
 
-def train_model():
+def train_model(FraudGNN, G, df):
 
-    FraudGNN = FraudGNN
-    G = create_nodes_edges()
-    df = clean_data()
+    #FraudGNN = FraudGNN
+    #G = create_nodes_edges()
+    #df = clean_data()
     # Prepare the data for input into the model
     edge_list = list(G.edges(data=True))
     x = []
@@ -54,4 +54,7 @@ def train_model():
         # Update the parameters
         optimizer.step()
 
+
+    return optimizer.step, model, target
+=======
     return model, target

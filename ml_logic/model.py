@@ -24,3 +24,15 @@ class FraudGNN(nn.Module):
         x = self.fc2(x)
 
         return x.squeeze(-1)
+
+def model_data(G):
+    # Prepare the data for input into the model
+    edge_list = list(G.edges(data=True))
+    x = []
+    for edge in edge_list:
+        edge_values = list(edge[2].values())
+        print(edge_values)
+        edge_values = [float(i[0]) if type(i) == tuple and type(i[0]) == str else i[0] if type(i) == tuple else i for i in edge_values]
+        x.append(edge_values)
+    x = torch.tensor(x, dtype=torch.float)
+    return x
