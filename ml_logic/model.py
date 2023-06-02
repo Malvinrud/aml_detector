@@ -24,39 +24,3 @@ class FraudGNN(nn.Module):
         x = self.fc2(x)
 
         return x.squeeze(-1)
-
-
-def evaluate_model(y_pred, y_test):
-    """
-    Evaluate trained model performance on the y_test
-    """
-
-    accuracy = BinaryAccuracy()
-
-    precision = BinaryPrecision()
-
-    recall = BinaryRecall()
-
-    f1 = BinaryF1Score()
-
-    auroc = BinaryAUROC()
-
-    accuracy = accuracy(y_pred, y_test)
-
-    precision = precision(y_pred, y_test)
-
-    recall = recall(y_pred, y_test)
-
-    f1 = f1(y_pred, y_test)
-
-    auroc = auroc(y_pred, y_test)
-
-
-    print(f"✅ Model evaluated")
-    print(f"accuracy: {accuracy}")
-    print(f"precision: {precision}")
-    print(f"recall: {recall}")
-    print(f"f1: {f1}")
-    print(f"auroc: {auroc}")
-
-    return (accuracy, precision, recall, f1, auroc)
