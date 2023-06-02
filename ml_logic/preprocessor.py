@@ -11,9 +11,12 @@ def preprocess_features(df: pd.DataFrame) -> pd.DataFrame:
     ohe = OneHotEncoder(sparse = False)
     ohe.fit(df[['payment_format']])
     df[ohe.get_feature_names_out()] = ohe.transform(df[['payment_format']])
-    #ohe.fit(df[['currency_pair']])
-    #df[ohe.get_feature_names_out()] = ohe.transform(df[['currency_pair']])
 
+    ohe.fit(df[['receiving_currency']])
+    df[ohe.get_feature_names_out()] = ohe.transform(df[['receiving_currency']])
+
+    ohe.fit(df[['payment_currency']])
+    df[ohe.get_feature_names_out()] = ohe.transform(df[['payment_currency']])
 
     print("✅ data preprocessed")
 
