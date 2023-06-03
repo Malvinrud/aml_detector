@@ -25,9 +25,7 @@ def create_nodes_edges(df):
     # Create a variable for each properties for each edge
 
         from_bank = row['from_bank'],
-        from_account = row['from_account'],
         to_bank = row['to_bank'],
-        to_account = row['to_account'],
         amount_paid_USD = row['amount_paid_USD'],
         amount_received_USD = row['amount_received_USD'],
         month = row['month'],
