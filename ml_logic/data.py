@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import csv
 import requests
+import os
 
 # from taxifare.params import *
 
@@ -13,7 +14,10 @@ def get_data_local(size="Small", fraud="HI"):
 
     size = size
 
-    file = f'../raw_data/{fraud}-{size}_Trans.csv'
+    current_dir = os.path.dirname(__file__)
+    file = os.path.join(current_dir, '..', 'raw_data', fraud+"-"+size+"_Trans.csv")
+
+    #file = f'../raw_data/{fraud}-{size}_Trans.csv'
     df = pd.read_csv(file, decimal=',')
 
     print("✅ data received")
