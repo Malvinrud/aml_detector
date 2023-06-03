@@ -6,6 +6,8 @@ import torch.nn.functional as F
 import networkx as nx
 from edges_nodes import create_nodes_edges
 from data import clean_data
+from sklearn.model_selection import train_test_split
+
 
 
 ######## TF imports here ########
@@ -25,7 +27,7 @@ class FraudGNN(nn.Module):
 
         return x.squeeze(-1)
 
-def model_data(G):
+def model_data(G, df):
     # Prepare the data for input into the model
     edge_list = list(G.edges(data=True))
     x = []
@@ -35,4 +37,18 @@ def model_data(G):
         edge_values = [float(i[0]) if type(i) == tuple and type(i[0]) == str else i[0] if type(i) == tuple else i for i in edge_values]
         x.append(edge_values)
     x = torch.tensor(x, dtype=torch.float)
-    return x
+
+    target = torch.tensor(df['is_laundering'].values, dtype=torch.float)
+
+    print("✅ x created")
+    print("✅ target created")
+
+    return x, target
+
+def train_test(x, target):
+    x, test_x, target, test_target = train_test_split(x, target, test_size=0.2, random_state=42)
+
+    print("✅ test_x created")
+    print("✅ test_target created")
+
+    return x, test_x, target, test_target

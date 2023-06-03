@@ -18,6 +18,6 @@ def preprocess_features(df: pd.DataFrame) -> pd.DataFrame:
     ohe.fit(df[['payment_currency']])
     df[ohe.get_feature_names_out()] = ohe.transform(df[['payment_currency']])
 
-    print("✅ data preprocessed")
+    print("✅ data One-Hot-Encoded")
 
     return df
