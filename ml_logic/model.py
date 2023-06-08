@@ -3,9 +3,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import networkx as nx
-from edges_nodes import create_nodes_edges
-from data import clean_data
 from sklearn.model_selection import train_test_split
 
 
@@ -33,7 +30,6 @@ def model_data(G, df):
     x = []
     for edge in edge_list:
         edge_values = list(edge[2].values())
-        print(edge_values)
         edge_values = [float(i[0]) if type(i) == tuple and type(i[0]) == str else i[0] if type(i) == tuple else i for i in edge_values]
         x.append(edge_values)
     x = torch.tensor(x, dtype=torch.float)
