@@ -26,16 +26,13 @@ if uploaded_csv is not None:
         with st.spinner('data analysis in process...'):
             # load the csv as dataframe
             df = pd.read_csv(uploaded_csv)
-            st.write(df)
             df_byte = df.to_json().encode() # .to_json() converts dataframe into json object
                                             # .encode() converts json object into bytes, encoded using UTF-8
             print(type(df_byte))
-            # Transfering info in CSV file to FastAPI as an encoded json in bytes,
-            # using POST method because we are sending information. The transfered
-            # bytes have to be decoded as a string but in json format
-            # 'myfile' name has to be used also in endpoint of FastAPI
 
-            response = requests.get(url, files={"myfile": df_byte})
+            url_endpoint = f"{url}/uploaded_csv_json"
+            response = requests.post(url=url, files={"myfile": df_byte})
+            #response = requests.get(url, files={"myfile": df_byte})
         st.success(response.json())
         st.write(response.json()) # printing the response from app.py in FastAPI
 

@@ -1,5 +1,7 @@
 import pandas as pd
-from fastapi import FastAPI
+import json
+from io import StringIO
+from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
 from ml_logic.data import *
@@ -12,7 +14,6 @@ from ml_logic.model import model_data
 from ml_logic.model import train_test
 from ml_logic.train import train_model
 from ml_logic.evaluate import predict
-from ml_logic.evaluate import evaluate_model
 
 
 
@@ -27,25 +28,42 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-@app.get("/predict")
-def aml_detector():
-    """Dummy function for prediction in production"""
-    df = get_data_local()
+@app.post('/uploaded_csv_json')
+def upload_file(myfile: UploadFile = File(...)):
+    contents = myfile.file.read() # Reading content of 'myfile' in bytes
+    decoded_str = contents.decode('utf-8') # Decoding contents into str type
+    print(decoded_str)
+    #breakpoint()
+    decoded_str = StringIO(contents.decode('utf-8')) # Alternative using StringIO
+    #df_json = json.loads(decoded_str) # Reading string and converting to json (dictionary)
+    df = pd.DataFrame(decoded_str) # Reading dictionary and converting into dataframe
+
+    return df
+
+@app.post("/predict")
+def aml_detector(myfile: UploadFile = File(...)):
+
+    contents = myfile.file.read()
+    decoded_str = contents.decode('latin-1')
+    decoded_str = StringIO(contents.decode('utf-8'))
+
+    df = pd.read_csv(decoded_str, sep=",")
+
+    print(df.columns)
+    print(df.shape)
+
+    #breakpoint()
+
     df = clean_data(df)
-    df = data_reduction(df)
     df = preprocess_features(df)
     G = create_nodes_edges(df)
     x, target = model_data(G, df)
     x, test_x, target, test_target = train_test(x, target)
     optimizer, model, target = train_model(FraudGNN, x, target)
     binary_predictions = predict(model, test_x)
-    result = evaluate_model(test_target, binary_predictions)
-    return {'Prediction': f"{binary_predictions}",
-            'Accuracy': f"{result[0].item()}",
-            'Precision': f"{result[1].item()}",
-            'Recall': f"{result[1].item()}",
-            'f1': f"{result[1].item()}",
-            'AUROC': f"{result[1].item()}"}
+    binary_predictions = binary_predictions.numpy().tolist()
+    print(binary_predictions)
+    return binary_predictions
 
 
 
