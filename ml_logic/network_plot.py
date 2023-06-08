@@ -79,7 +79,7 @@ def draw_undirected_multigraph(G):
     Returns:
     plotly.graph_objs._figure.Figure: A Plotly Figure object representing the graph.
     """
-    pos = nx.spiral_layout(G)
+    pos = nx.kamada_kawai_layout:(G)
     edge_x = []
     edge_y = []
     for edge in G.edges():
