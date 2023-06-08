@@ -79,7 +79,7 @@ def draw_undirected_multigraph(G):
     Returns:
     plotly.graph_objs._figure.Figure: A Plotly Figure object representing the graph.
     """
-    pos = nx.kamada_kawai_layout:(G)
+    pos = nx.kamada_kawai_layout(G)
     edge_x = []
     edge_y = []
     for edge in G.edges():
@@ -135,7 +135,11 @@ def draw_undirected_multigraph(G):
 
     fig = go.Figure(data=[edge_trace, node_trace],
                 layout=go.Layout(
-                    title='Network Graph',
+                    title=dict(
+                            text='Spiral Layout of Account Transaction Network',
+                            x=0.5,  # center title
+                            xanchor='center'  # specify the anchor point, to make sure it's centered at x=0.5
+                            ),
                     titlefont_size=16,
                     showlegend=False,
                     hovermode='closest',
@@ -302,7 +306,11 @@ def draw_directed_multigraph(G):
 
     fig = go.Figure(data=[edge_trace_grey, edge_trace_red, node_trace],
                     layout=go.Layout(
-                        title='Network graph based on node degree',
+                        title=dict(
+                            text="Money Laundering and Transaction Network: Degree-Centric Perspective",
+                            x=0.5,  # center title
+                            xanchor='center'  # specify the anchor point, to make sure it's centered at x=0.5
+                            ),
                         titlefont_size=16,
                         showlegend=False,
                         hovermode='closest',
@@ -394,7 +402,11 @@ def plot_graph_based_on_centrality(G, centrality_dict):
     # Create a figure
     fig = go.Figure(data=[edge_trace, node_trace],
                     layout=go.Layout(
-                        title='<br>Network Graph based on Betweenness Centrality',
+                        title=dict(
+                            text='Betweenness Centrality Analysis in Money Laundering Network',
+                            x=0.5,  # center title
+                            xanchor='center'  # specify the anchor point, to make sure it's centered at x=0.5
+                            ),
                         titlefont=dict(size=16),
                         showlegend=False,
                         hovermode='closest',
@@ -498,7 +510,11 @@ def draw_cycle_subgraph(G_cycle):
     # Create a figure
     fig = go.Figure(data=[edge_trace, node_trace],
                     layout=go.Layout(
-                        title='Network graph of cycles of length 2 or more',
+                        title=dict(
+                            text='Subgraph Visualization of Cycles in Financial Transaction Networks',
+                            x=0.5,  # center title
+                            xanchor='center'  # specify the anchor point, to make sure it's centered at x=0.5
+                            ),
                         titlefont=dict(size=16),
                         showlegend=False,
                         hovermode='closest',
