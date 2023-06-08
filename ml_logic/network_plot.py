@@ -508,24 +508,21 @@ def draw_cycle_subgraph(G_cycle):
 
 
     # Create a figure
-    fig = go.Figure(data=[edge_trace, node_trace],
-                    layout=go.Layout(
-                        title=dict(
-                            text='Subgraph Visualization of Cycles in Financial Transaction Networks',
-                            x=0.5,  # center title
-                            xanchor='center'  # specify the anchor point, to make sure it's centered at x=0.5
-                            ),
-                        titlefont=dict(size=16),
-                        showlegend=False,
-                        hovermode='closest',
-                        margin=dict(b=20, l=5, r=5, t=40),
-                        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-                        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-                        annotations=[dict(
-                            showarrow=False,
-                            xref="paper", yref="paper",
-                            x=0.005, y=-0.002)],
-                        ))
-
+    fig = go.Figure(
+        data=[edge_trace, node_trace],
+        layout=go.Layout(
+            title=dict(
+                text='Subgraph Visualization of Cycles in Financial Transaction Networks',
+                x=0.5,  # center title
+                xanchor='center'  # specify the anchor point, to make sure it's centered at x=0.5
+            ),
+            titlefont=dict(size=16),
+            showlegend=False,
+            hovermode='closest',
+            margin=dict(b=20, l=5, r=5, t=40),
+            xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+            yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)
+        )
+    )
     # Return the figure
     return fig
