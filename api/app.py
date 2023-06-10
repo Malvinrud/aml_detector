@@ -4,7 +4,6 @@ import pandas as pd
 import plotly as px
 import requests
 
-
 st.markdown("""# AML detector""")
 
 st.divider()

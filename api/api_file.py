@@ -15,12 +15,10 @@ from ml_logic.model import train_test
 from ml_logic.train import train_model
 from ml_logic.evaluate import predict
 
-
-
-app = FastAPI()
+api = FastAPI()
 
 # Allowing all middleware is optional, but good practice for dev purposes
-app.add_middleware(
+api.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allows all origins
     allow_credentials=True,
@@ -31,7 +29,6 @@ app.add_middleware(
 
 @app.post("/predict")
 def aml_detector(myfile: UploadFile = File(...)):
-
 
 
     contents = myfile.file.read()
@@ -83,7 +80,7 @@ def aml_detector(myfile: UploadFile = File(...)):
 
     return df
 
-@app.get("/")
+@api.get("/")
 def root():
     data = get_data_local()
     size = data.shape

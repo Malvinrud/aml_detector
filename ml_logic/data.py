@@ -121,7 +121,8 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
     # Convert Timestamp into datetime
     df['timestamp'] = pd.to_datetime(df['timestamp'])
-
+    #df['timestamp'] = pd.to_datetime(df['timestamp'], format='%d-%m-%Y %H:%M:%S')
+    #df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
 
     # Create new columns for year, month, day, hour and minute
     # df['year'] = df['timestamp'].dt.year
