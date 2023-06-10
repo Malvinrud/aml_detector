@@ -26,4 +26,4 @@ RUN pip install -r requirements.txt
 CMD uvicorn api.api_file.py:app --host 0.0.0.0.
 
 #gps
-#CMD uvicorn API_FOLDER.API_FILE:api --host 0.0.0.0. --port $PORT
+CMD uvicorn API_FOLDER.API_FILE:api --host 0.0.0.0. --port $PORT
