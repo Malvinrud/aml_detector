@@ -11,7 +11,7 @@ st.divider()
 
 st.markdown("""💸💸💸“Money is usually attracted, not pursued.”\t💸💸💸""")
 
-
+stop = True
 
 # This reads file as bytes, other options are available
 
@@ -28,21 +28,23 @@ if uploaded_csv is not None:
             df = pd.read_csv(uploaded_csv)
             df_byte = df.to_json().encode() # .to_json() converts dataframe into json object
                                             # .encode() converts json object into bytes, encoded using UTF-8
-            print(type(df_byte))
 
-            url_endpoint = f"{url}/uploaded_csv_json"
+
             response = requests.post(url=url, files={"myfile": df_byte})
-            #response = requests.get(url, files={"myfile": df_byte})
-        st.success(response.json())
-        st.write(response.json()) # printing the response from app.py in FastAPI
+            #response = pd.DataFrame.from_dict(response.text)
+            print(response)
+        stop = False
+        st.success("analysis ready")
 
-##### money emoji while waiting
+#process_df = pd.read_csv(uploaded_csv)
+
+if stop == True:
+    st.stop()
+
+stop = True
 
 
-# model predict output needs to be changed (currently tensor->str)
-
-
-# process df to sho results properly, add plotly
+# process df to show results properly, add plotly
 
 
 ### dummy for plotly viz

@@ -28,44 +28,60 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-@app.post('/uploaded_csv_json')
-def upload_file(myfile: UploadFile = File(...)):
-    contents = myfile.file.read() # Reading content of 'myfile' in bytes
-    decoded_str = contents.decode('utf-8') # Decoding contents into str type
-    print(decoded_str)
-    #breakpoint()
-    decoded_str = StringIO(contents.decode('utf-8')) # Alternative using StringIO
-    #df_json = json.loads(decoded_str) # Reading string and converting to json (dictionary)
-    df = pd.DataFrame(decoded_str) # Reading dictionary and converting into dataframe
-
-    return df
 
 @app.post("/predict")
 def aml_detector(myfile: UploadFile = File(...)):
 
-    contents = myfile.file.read()
-    decoded_str = contents.decode('latin-1')
-    decoded_str = StringIO(contents.decode('utf-8'))
 
+
+    contents = myfile.file.read()
+
+
+
+    decoded_str = StringIO(contents.decode('utf-8'))
     df = pd.read_csv(decoded_str, sep=",")
 
-    print(df.columns)
-    print(df.shape)
-
-    #breakpoint()
-
-    df = clean_data(df)
-    df = preprocess_features(df)
-    G = create_nodes_edges(df)
-    x, target = model_data(G, df)
-    x, test_x, target, test_target = train_test(x, target)
-    optimizer, model, target = train_model(FraudGNN, x, target)
-    binary_predictions = predict(model, test_x)
-    binary_predictions = binary_predictions.numpy().tolist()
-    print(binary_predictions)
-    return binary_predictions
 
 
+
+    # Theoretically correct
+    #############################################################
+
+    # df = get_data_local()
+
+    # new = ["US Dollar",
+    #         "Bitcoin",
+    #         "Euro",
+    #         "Australiean Dollar",
+    #         "Yuan",
+    #         "Rupee",
+    #         "Yen",
+    #         "Mexican Peso",
+    #         "UK Pound",
+    #         "Ruble",
+    #         "Canadian Dollar",
+    #         "Swiss Franc",
+    #         "Brazil Real",
+    #         "Saudi Riyal",
+    #         "Shekel"]
+
+    # df = df[:16]
+    # df
+
+    # df = clean_data(df)
+    # df = preprocess_features(df)
+    # G = create_nodes_edges(df)
+    # x, target = model_data(G, df)
+    # x, test_x, target, test_target = train_test(x, target)
+    # optimizer, model, target = train_model(FraudGNN, x, target)
+    # binary_predictions = predict(model, test_x)
+    # binary_predictions = binary_predictions.numpy().tolist()
+    # print(binary_predictions)
+    # return binary_predictions, len(binary_predictions)
+
+    #############################################################
+
+    return df
 
 @app.get("/")
 def root():
