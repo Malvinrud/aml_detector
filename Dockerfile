@@ -30,3 +30,4 @@ RUN pip install -r requirements.txt
 #gps
 CMD uvicorn api.api_file:api --host 0.0.0.0.
 #--port $PORT
+
