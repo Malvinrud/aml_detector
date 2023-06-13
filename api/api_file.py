@@ -14,6 +14,8 @@ from ml_logic.model import model_data
 from ml_logic.model import train_test
 from ml_logic.train import train_model
 from ml_logic.evaluate import predict
+from ml_logic.worklfow import *
+
 
 api = FastAPI()
 
@@ -27,16 +29,16 @@ api.add_middleware(
 )
 
 
-@app.post("/predict")
+@api.post("/predict")
 def aml_detector(myfile: UploadFile = File(...)):
 
 
     contents = myfile.file.read()
 
-
-
     decoded_str = StringIO(contents.decode('utf-8'))
     df = pd.read_csv(decoded_str, sep=",")
+
+    df = clean_data(df)
 
 
 
@@ -44,26 +46,7 @@ def aml_detector(myfile: UploadFile = File(...)):
     # Theoretically correct
     #############################################################
 
-    # df = get_data_local()
 
-    # new = ["US Dollar",
-    #         "Bitcoin",
-    #         "Euro",
-    #         "Australiean Dollar",
-    #         "Yuan",
-    #         "Rupee",
-    #         "Yen",
-    #         "Mexican Peso",
-    #         "UK Pound",
-    #         "Ruble",
-    #         "Canadian Dollar",
-    #         "Swiss Franc",
-    #         "Brazil Real",
-    #         "Saudi Riyal",
-    #         "Shekel"]
-
-    # df = df[:16]
-    # df
 
     # df = clean_data(df)
     # df = preprocess_features(df)
@@ -76,12 +59,35 @@ def aml_detector(myfile: UploadFile = File(...)):
     # print(binary_predictions)
     # return binary_predictions, len(binary_predictions)
 
+
+    # Only for train/predict in production
+
     #############################################################
 
-    return df
+    y = df["is_laundering"]
 
-@api.get("/")
-def root():
-    data = get_data_local()
-    size = data.shape
-    return {'greeting': "Hello" }
+    X = df.drop(["is_laundering"], axis=1)
+
+    X, X_test, y, y_test = train_test_split(X, y, test_size=0.2)
+
+    model, X_test_tensor, y_test_tensor = model_workflow(X, X_test, y, y_test)
+
+    predictions = predict(model, x=X_test_tensor)
+
+    #############################################################
+
+    return predictions
+
+
+# @api.post("/plot")
+# def aml_detector(myfile: UploadFile = File(...)):
+
+
+
+
+
+# @api.get("/")
+# def root():
+#     data = get_data_local()
+#     size = data.shape
+#     return {'greeting': "Hello" }

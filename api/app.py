@@ -21,7 +21,7 @@ url = "http://localhost:8000/predict"
 # Uploading CSV file
 uploaded_csv = st.file_uploader("Choose a CSV file", type="csv", accept_multiple_files=False)
 if uploaded_csv is not None:
-    if st.button('Get results transfering encoded json as bytes'):
+    if st.button('Detect fraudulent data'):
         with st.spinner('data analysis in process...'):
             # load the csv as dataframe
             df = pd.read_csv(uploaded_csv)
