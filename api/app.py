@@ -10,7 +10,7 @@ st.divider()
 
 st.markdown("""💸💸💸“Money is usually attracted, not pursued.”\t💸💸💸""")
 
-
+stop = True
 
 # This reads file as bytes, other options are available
 
@@ -25,26 +25,25 @@ if uploaded_csv is not None:
         with st.spinner('data analysis in process...'):
             # load the csv as dataframe
             df = pd.read_csv(uploaded_csv)
-            st.write(df)
             df_byte = df.to_json().encode() # .to_json() converts dataframe into json object
                                             # .encode() converts json object into bytes, encoded using UTF-8
-            print(type(df_byte))
-            # Transfering info in CSV file to FastAPI as an encoded json in bytes,
-            # using POST method because we are sending information. The transfered
-            # bytes have to be decoded as a string but in json format
-            # 'myfile' name has to be used also in endpoint of FastAPI
-
-            response = requests.get(url, files={"myfile": df_byte})
-        st.success(response.json())
-        st.write(response.json()) # printing the response from app.py in FastAPI
-
-##### money emoji while waiting
 
 
-# model predict output needs to be changed (currently tensor->str)
+            response = requests.post(url=url, files={"myfile": df_byte})
+            #response = pd.DataFrame.from_dict(response.text)
+            print(response)
+        stop = False
+        st.success("analysis ready")
+
+#process_df = pd.read_csv(uploaded_csv)
+
+if stop == True:
+    st.stop()
+
+stop = True
 
 
-# process df to sho results properly, add plotly
+# process df to show results properly, add plotly
 
 
 ### dummy for plotly viz
