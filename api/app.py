@@ -12,14 +12,12 @@ st.markdown("""💸💸💸“Money is usually attracted, not pursued.”\t💸�
 
 stop = True
 
-# This reads file as bytes, other options are available
-
-
 
 
 url = "http://localhost:8000/predict"
 # Uploading CSV file
 uploaded_csv = st.file_uploader("Choose a CSV file", type="csv", accept_multiple_files=False)
+
 if uploaded_csv is not None:
     if st.button('Get results transfering encoded json as bytes'):
         with st.spinner('data analysis in process...'):
@@ -28,17 +26,21 @@ if uploaded_csv is not None:
             df_byte = df.to_json().encode() # .to_json() converts dataframe into json object
                                             # .encode() converts json object into bytes, encoded using UTF-8
 
-
-            response = requests.post(url=url, files={"myfile": df_byte})
+            results = requests.post(url=url, files={"myfile": df_byte})
             #response = pd.DataFrame.from_dict(response.text)
-            print(response)
+            print ("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+            print(type(results))
         stop = False
         st.success("analysis ready")
 
-#process_df = pd.read_csv(uploaded_csv)
-
 if stop == True:
     st.stop()
+
+# results need to be merged to df!
+
+st.write(df)
+
+st.write(results)
 
 stop = True
 
