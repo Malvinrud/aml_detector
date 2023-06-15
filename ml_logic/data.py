@@ -74,7 +74,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     # Get the exchange rate for all the currencies by connecting to Exchange Rate Data API
 
     # Exchange rate data api key
-    api_key = "wdiQOxfDckJMZr70O1Brmvlh56iJEfE7"
+    api_key = "RPKnKVqfveUOzhUR9Ir8Nqq6HA5DI0md"
 
     # Arbitrary date to fetch the exchange rates
     date = "2022-09-30"
