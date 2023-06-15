@@ -11,6 +11,10 @@ from ml_logic.model import *
 from ml_logic.evaluate import predict
 from ml_logic.worklfow import *
 
+import networkx as nx
+import pandas as pd
+import plotly.graph_objects as go
+
 app = FastAPI()
 
 # Allowing all middleware is optional, but good practice for dev purposes

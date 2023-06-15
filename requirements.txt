@@ -8,3 +8,4 @@ scikit-learn
 torch
 torchmetrics
 python-multipart
+pyvis
