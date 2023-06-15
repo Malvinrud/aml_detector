@@ -7,7 +7,7 @@ from ml_logic.train import *
 from ml_logic.evaluate import *
 
 
-def data_workflow(size="Small", fraud="HI", test_size=0.2):
+def data_workflow(size="Large", fraud="HI", test_size=0.2):
 
     df = get_data_local(size="Small", fraud="HI")
 

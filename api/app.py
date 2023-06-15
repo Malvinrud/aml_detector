@@ -3,6 +3,10 @@ import numpy as np
 import pandas as pd
 import plotly as px
 import requests
+import json
+from ml_logic.edges_nodes2 import *
+from ml_logic.network_plot import *
+from ml_logic.data import clean_data
 
 st.markdown("""# AML detector""")
 
@@ -13,23 +17,24 @@ st.markdown("""💸💸💸“Money is usually attracted, not pursued.”\t💸�
 stop = True
 
 
-
-url = "http://localhost:8000/predict"
 # Uploading CSV file
 uploaded_csv = st.file_uploader("Choose a CSV file", type="csv", accept_multiple_files=False)
 
 if uploaded_csv is not None:
-    if st.button('Get results transfering encoded json as bytes'):
-        with st.spinner('data analysis in process...'):
+    if st.button('Get money laundering analysis'):
+        with st.spinner('Data analysis in process...'):
             # load the csv as dataframe
             df = pd.read_csv(uploaded_csv)
             df_byte = df.to_json().encode() # .to_json() converts dataframe into json object
                                             # .encode() converts json object into bytes, encoded using UTF-8
 
-            results = requests.post(url=url, files={"myfile": df_byte})
+            results = requests.post(url="http://localhost:8000/predict", files={"myfile": df_byte})
             #response = pd.DataFrame.from_dict(response.text)
             print ("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+            results = results.text
+            results = json.loads(results)
             print(type(results))
+
         stop = False
         st.success("analysis ready")
 
@@ -40,7 +45,7 @@ if stop == True:
 
 st.write(df)
 
-st.write(results)
+st.write(sum(results))
 
 stop = True
 
@@ -66,3 +71,7 @@ stop = True
 # fig = go.Figure(data=[go.Surface(z=z, x=x, y=y)])
 # fig.update_layout(title='IRR', autosize=False, width=800, height=800, margin=dict(l=40, r=40, b=40, t=40))
 # st.plotly_chart(fig)
+
+df = clean_data(df)
+G = create_nodes_edges(df)
+undirected_multigraph(G)

@@ -6,13 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from ml_logic.data import *
 from ml_logic.preprocessor import preprocess_features
-from ml_logic.edges_nodes import *
-from ml_logic.edges_nodes import create_nodes_edges
+from ml_logic.edges_nodes2 import *
 from ml_logic.model import *
-from ml_logic.model import FraudGNN
-from ml_logic.model import model_data
-from ml_logic.model import train_test
-from ml_logic.train import train_model
 from ml_logic.evaluate import predict
 from ml_logic.worklfow import *
 
