@@ -74,30 +74,50 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     # Get the exchange rate for all the currencies by connecting to Exchange Rate Data API
 
     # Exchange rate data api key
-    api_key = "RPKnKVqfveUOzhUR9Ir8Nqq6HA5DI0md"
+    #api_key = "RPKnKVqfveUOzhUR9Ir8Nqq6HA5DI0md"
 
     # Arbitrary date to fetch the exchange rates
-    date = "2022-09-30"
+    #date = "2022-09-30"
 
     # The list of currency codes to fetch the exchange rates
-    currency_codes = ["GBP", "EUR", "AUD", "BTC", "BRL", "CAD", "MXN", "RUB", "INR", "SAR", "ILS", "CHF", "JPY", "CNY"]
+    #currency_codes = ["GBP", "EUR", "AUD", "BTC", "BRL", "CAD", "MXN", "RUB", "INR", "SAR", "ILS", "CHF", "JPY", "CNY"]
 
     # URL
-    url = f"https://api.apilayer.com/exchangerates_data/{date}?symbols={','.join(currency_codes)}&base=USD"
+    #url = f"https://api.apilayer.com/exchangerates_data/{date}?symbols={','.join(currency_codes)}&base=USD"
 
     # Define the headers
-    headers = {
-    "apikey": api_key
-    }
+    #headers = {
+    #"apikey":api_key
+    #}
 
     # Send a GET request to the API
-    response = requests.get(url, headers=headers)
+    #response = requests.get(url, headers=headers)
 
     # Convert the response to JSON
-    data = response.json()
+    #data = response.json()
+
+    #print(data)
+
+    # Creating a dictionary of the exchange rates
+    exchange_rates = {
+        "GBP": 0.896861,
+        "EUR": 1.019910,
+        "AUD": 1.561524,
+        "BTC": 0.000051,
+        "BRL": 5.412471,
+        "CAD": 1.383270,
+        "MXN": 20.146150,
+        "RUB": 60.203690,
+        "INR": 81.638404,
+        "SAR": 3.756801,
+        "ILS": 3.558540,
+        "CHF": 0.987171,
+        "JPY": 144.739040,
+        "CNY": 7.116041
+    }
 
     # Create a DataFrame from the rates
-    df_rates = pd.DataFrame(data['rates'].items(), columns=['currency_code', 'rate'])
+    df_rates = pd.DataFrame(list(exchange_rates.items()), columns=['currency_code', 'rate'])
 
     # Merge df with df_rates on 'Currency Code', preserving all rows from df and filling in NaN for missing match
     df = df.merge(df_rates, on='currency_code', how='left')
@@ -108,7 +128,6 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     # Compute 'Amount Paid USD' and 'Amount Received USD'
     df['amount_paid_USD'] = df['amount_paid'].astype('float32') * df['rate']
     df['amount_received_USD'] = df['amount_received'].astype('float32') * df['rate']
-
 
     # put currency pair together and delete obsolete columns
 
