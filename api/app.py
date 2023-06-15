@@ -21,8 +21,6 @@ st.markdown("""# AML detector""")
 
 st.divider()
 
-st.markdown("""💸💸💸“Money is usually attracted, not pursued.”\t💸💸💸""")
-
 stop = True
 
 
@@ -45,23 +43,15 @@ if uploaded_csv is not None:
             results = json.loads(results)
 
         stop = False
-        st.success("analysis ready")
+        st.success(f"{sum(results)} money laundering cases detected")
 
 if stop == True:
     st.stop()
 
-# results need to be merged to df!
-
-st.write(df)
-
-st.write(sum(results))
-
-stop = True
-
-
-# plotly
 
 df = clean_data(df)
+
+
 
 # first, create the directed multigraph
 G = directed_multidigraph(df)
@@ -70,16 +60,20 @@ G = directed_multidigraph(df)
 node_in_degrees, node_out_degrees, node_degrees = calculate_degrees(G)
 
 # finally, draw the directed multigraph
-draw_directed_multigraph(G)
+fig = draw_directed_multigraph(G)
 
-network = Network(directed=True, notebook=False)
-network.from_nx(G)
-
-edge_list = nx.to_pandas_edgelist(G)
-
-# Create a Plotly figure
-fig = go.Figure(data=[go.Scatter(x=edge_list['source'], y=edge_list['target'], mode='lines')])
-
-
-# Render the network visualization in Streamlit
 st.plotly_chart(fig)
+
+
+
+
+
+
+
+# create the cycle subgraph
+G_cycle = cycle_subgraph(G, min_cycle_length=2)
+
+# draw the cycle subgraph
+circle = draw_cycle_subgraph(G_cycle)
+
+st.plotly_chart(circle)
