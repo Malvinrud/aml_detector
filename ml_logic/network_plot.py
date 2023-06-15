@@ -319,6 +319,7 @@ def draw_directed_multigraph(G):
                         yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)
                     ))
 
+
     return fig
 
 def calculate_betweenness_centrality(G, k=500):

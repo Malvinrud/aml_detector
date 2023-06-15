@@ -8,11 +8,18 @@ from ml_logic.edges_nodes2 import *
 from ml_logic.network_plot import *
 from ml_logic.data import clean_data
 
+from pyvis.network import Network
+
+
+############
+import networkx as nx
+import pandas as pd
+import plotly.graph_objects as go
+############
+
 st.markdown("""# AML detector""")
 
 st.divider()
-
-st.markdown("""💸💸💸“Money is usually attracted, not pursued.”\t💸💸💸""")
 
 stop = True
 
@@ -25,6 +32,7 @@ if uploaded_csv is not None:
         with st.spinner('Data analysis in process...'):
             # load the csv as dataframe
             df = pd.read_csv(uploaded_csv)
+            print(df)
             df_byte = df.to_json().encode() # .to_json() converts dataframe into json object
                                             # .encode() converts json object into bytes, encoded using UTF-8
 
@@ -33,45 +41,39 @@ if uploaded_csv is not None:
             print ("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
             results = results.text
             results = json.loads(results)
-            print(type(results))
 
         stop = False
-        st.success("analysis ready")
+        st.success(f"{sum(results)} money laundering cases detected")
 
 if stop == True:
     st.stop()
 
-# results need to be merged to df!
-
-st.write(df)
-
-st.write(sum(results))
-
-stop = True
-
-
-# process df to show results properly, add plotly
-
-
-### dummy for plotly viz
-
-#@st.cache_data
-#def get_plotly_data():
-
-    # z_data = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/api_docs/mt_bruno_elevation.csv')
-    # z = z_data.values
-    # sh_0, sh_1 = z.shape
-    # x, y = np.linspace(0, 1, sh_0), np.linspace(0, 1, sh_1)
-    # return x, y, z
-
-# import plotly.graph_objects as go
-
-# x, y, z = get_plotly_data()
-
-# fig = go.Figure(data=[go.Surface(z=z, x=x, y=y)])
-# fig.update_layout(title='IRR', autosize=False, width=800, height=800, margin=dict(l=40, r=40, b=40, t=40))
-# st.plotly_chart(fig)
 
 df = clean_data(df)
-G = create_nodes_edges(df)
-undirected_multigraph(G)
+
+
+
+# first, create the directed multigraph
+G = directed_multidigraph(df)
+
+# next, calculate degrees for each node in the graph
+node_in_degrees, node_out_degrees, node_degrees = calculate_degrees(G)
+
+# finally, draw the directed multigraph
+fig = draw_directed_multigraph(G)
+
+st.plotly_chart(fig)
+
+
+
+
+
+
+
+# create the cycle subgraph
+G_cycle = cycle_subgraph(G, min_cycle_length=2)
+
+# draw the cycle subgraph
+circle = draw_cycle_subgraph(G_cycle)
+
+st.plotly_chart(circle)
