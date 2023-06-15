@@ -96,8 +96,6 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     # Convert the response to JSON
     data = response.json()
 
-    print(data)
-
     # Create a DataFrame from the rates
     df_rates = pd.DataFrame(data['rates'].items(), columns=['currency_code', 'rate'])
 
