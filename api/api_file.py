@@ -6,14 +6,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from ml_logic.data import *
 from ml_logic.preprocessor import preprocess_features
-from ml_logic.edges_nodes import *
-from ml_logic.edges_nodes import create_nodes_edges
+from ml_logic.edges_nodes2 import *
 from ml_logic.model import *
-from ml_logic.model import FraudGNN
-from ml_logic.model import model_data
-from ml_logic.model import train_test
-from ml_logic.train import train_model
 from ml_logic.evaluate import predict
+from ml_logic.worklfow import *
 
 app = FastAPI()
 
@@ -33,52 +29,45 @@ def aml_detector(myfile: UploadFile = File(...)):
 
     contents = myfile.file.read()
 
+    decoded_str = contents.decode('utf-8')
+
+    df = pd.read_json(decoded_str)
+
+    ###################################################
+
+    df = clean_data(df)
+
+    y = df["is_laundering"]
+
+    X = df.drop(["is_laundering"], axis=1)
+
+    X, X_test, y, y_test = train_test_split(X, y, test_size=0.2)
+
+    model, X_test_tensor, y_test_tensor = model_workflow(X, X_test, y, y_test)
+
+    results = predict(model, X_test_tensor)
+
+    print(results)
+
+    ###################################################
 
 
-    decoded_str = StringIO(contents.decode('utf-8'))
-    df = pd.read_csv(decoded_str, sep=",")
+    ###### If predict function is used:
+
+    results = results.tolist()
+
+    print(type(results))
+
+    return results
 
 
 
+@app.post("/plot")
+def aml_plot(myfile: UploadFile = File(...)):
 
-    # Theoretically correct
-    #############################################################
+    pass
 
-    # df = get_data_local()
 
-    # new = ["US Dollar",
-    #         "Bitcoin",
-    #         "Euro",
-    #         "Australiean Dollar",
-    #         "Yuan",
-    #         "Rupee",
-    #         "Yen",
-    #         "Mexican Peso",
-    #         "UK Pound",
-    #         "Ruble",
-    #         "Canadian Dollar",
-    #         "Swiss Franc",
-    #         "Brazil Real",
-    #         "Saudi Riyal",
-    #         "Shekel"]
-
-    # df = df[:16]
-    # df
-
-    # df = clean_data(df)
-    # df = preprocess_features(df)
-    # G = create_nodes_edges(df)
-    # x, target = model_data(G, df)
-    # x, test_x, target, test_target = train_test(x, target)
-    # optimizer, model, target = train_model(FraudGNN, x, target)
-    # binary_predictions = predict(model, test_x)
-    # binary_predictions = binary_predictions.numpy().tolist()
-    # print(binary_predictions)
-    # return binary_predictions, len(binary_predictions)
-
-    #############################################################
-
-    return df
 
 @app.get("/")
 def root():

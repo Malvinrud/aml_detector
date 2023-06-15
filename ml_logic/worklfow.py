@@ -1,14 +1,13 @@
 import pandas as pd
-from data import *
-from model import *
+from ml_logic.model import *
 from sklearn.model_selection import train_test_split
-from preprocessor import *
-from edges_nodes2 import *
-from train import *
-from evaluate import *
+from ml_logic.preprocessor import *
+from ml_logic.edges_nodes2 import *
+from ml_logic.train import *
+from ml_logic.evaluate import *
 
 
-def data_workflow(size="Small", fraud="HI", test_size=0.2):
+def data_workflow(size="Large", fraud="HI", test_size=0.2):
 
     df = get_data_local(size="Small", fraud="HI")
 
@@ -23,7 +22,7 @@ def data_workflow(size="Small", fraud="HI", test_size=0.2):
     return X, X_test, y, y_test
 
 
-def model_workflow(X=X, X_test=X_test, y=y, y_test=y_test):
+def model_workflow(X, X_test, y, y_test):
 
     X = preprocess_features(X)
 
@@ -58,7 +57,7 @@ def plot_prep(X_test, y_pred):
     return graph_df
 
 
-def prediction_workflow(model=model, X_test=X_test, y_test=y_test):
+def prediction_workflow(model, X_test, y_test):
 
     X_test = preprocess_features(X_test)
 
