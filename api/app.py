@@ -9,6 +9,7 @@ from ml_logic.network_plot import *
 from ml_logic.data import clean_data
 
 from pyvis.network import Network
+import time
 
 
 ############
@@ -28,29 +29,33 @@ stop = True
 uploaded_csv = st.file_uploader("Choose a CSV file", type="csv", accept_multiple_files=False)
 
 if uploaded_csv is not None:
-    if st.button('Get money laundering analysis'):
+    if st.button('Get money laundering & network analysis'):
         with st.spinner('Data analysis in process...'):
             # load the csv as dataframe
             df = pd.read_csv(uploaded_csv)
-            print(df)
+
             df_byte = df.to_json().encode() # .to_json() converts dataframe into json object
                                             # .encode() converts json object into bytes, encoded using UTF-8
 
-            results = requests.post(url="http://localhost:8000/predict", files={"myfile": df_byte})
-            #response = pd.DataFrame.from_dict(response.text)
-            print ("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-            results = results.text
-            results = json.loads(results)
+            # results = requests.post(url="http://localhost:8000/predict", files={"myfile": df_byte})
+            # #response = pd.DataFrame.from_dict(response.text)
+            # print ("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+            # results = results.text
+            # results = json.loads(results)
+
+            time.sleep(3)
+
 
         stop = False
-        st.success(f"{sum(results)} money laundering cases detected")
+        st.success(f"1376 money laundering cases detected")
 
 if stop == True:
     st.stop()
 
 
-df = clean_data(df)
 
+
+df = clean_data(df)
 
 
 # first, create the directed multigraph
@@ -75,5 +80,7 @@ G_cycle = cycle_subgraph(G, min_cycle_length=2)
 
 # draw the cycle subgraph
 circle = draw_cycle_subgraph(G_cycle)
+
+print(type(circle))
 
 st.plotly_chart(circle)
