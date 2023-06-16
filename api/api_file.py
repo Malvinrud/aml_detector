@@ -4,7 +4,6 @@ from io import StringIO
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
-from ml_logic.data import *
 from ml_logic.preprocessor import preprocess_features
 from ml_logic.edges_nodes2 import *
 from ml_logic.model import *
