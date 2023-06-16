@@ -1,4 +1,3 @@
-"""
 
 import pandas as pd
 import json
@@ -79,5 +78,3 @@ def root():
     data = get_data_local()
     size = data.shape
     return {'greeting': "Hello" }
-
-"""
