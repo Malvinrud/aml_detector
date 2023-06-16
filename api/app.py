@@ -48,7 +48,7 @@ if uploaded_csv is not None:
             # results = results.text
             # results = json.loads(results)
 
-            time.sleep(3)
+            time.sleep(15)
 
 
         stop = False
