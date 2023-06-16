@@ -10,8 +10,8 @@ import plotly as px
 import requests
 import json
 from edges_nodes2 import *
-from ml_logic.network_plot import *
-from ml_logic.data import clean_data
+from network_plot import *
+from data import clean_data
 
 from pyvis.network import Network
 import time
