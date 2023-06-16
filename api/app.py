@@ -4,7 +4,7 @@ import pandas as pd
 import plotly as px
 import requests
 import json
-#from ml_logic.edges_nodes2 import *
+from ml_logic.edges_nodes2 import *
 from ml_logic.network_plot import *
 from ml_logic.data import clean_data
 
